@@ -2,3 +2,7 @@
 none = 0
 admin = 10
 superadmin = 20
+
+[card]
+white = 0
+black = 1

@@ -10,7 +10,8 @@ app.use(require('kcors')())
 app.use(require('koa-bodyparser')())
 app.use(require('middleware/error'))
 
-app.use(mount('/', require('route/index').routes()))
+app.use(mount('/', require('route/card').routes()))
+app.use(mount('/', require('route/deck').routes()))
 app.use(mount('/', require('route/user').routes()))
 
 app.use(async function (ctx, next) {
