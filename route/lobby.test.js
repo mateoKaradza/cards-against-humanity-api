@@ -9,8 +9,15 @@ test.api('create a lobby', async function (t, request, store) {
     size: 10,
   })
 
+  const data = _.get(r, 'body.data')
   t.is(r.status, 200, 'success')
-  store.set('lobby 1', _.get(r, 'body.data'))
+
+  const r2 = await request.get(`/lobby/${data.id}/users`).set(await test.auth('user1@example.com', 'user1'))
+
+  t.is(r2.status, 200, 'success')
+  t.is(r2.body.data.length, 1, 'just one participant')
+
+  store.set('lobby 1', data)
 })
 
 test.api('get all lobbies', async function (t, request) {
@@ -37,6 +44,27 @@ test.api('delete a lobby', async function (t, request) {
   }), 'body.data.id')
 
   const r = await request.delete(`/lobby/${id}`).set(await test.auth('user1@example.com', 'user1'))
-
   t.is(r.status, 200, 'success')
+})
+
+test.api('join a lobby', async function (t, request, store) {
+  const {id} = store.get('lobby 1')
+
+  const r = await request.post(`/lobby/${id}/users`).set(await test.auth('user2@example.com', 'user2'))
+  t.is(r.status, 200, 'success')
+
+  const r2 = await request.get(`/lobby/${id}/users`).set(await test.auth('user2@example.com', 'user2'))
+  t.is(r2.status, 200, 'success')
+  t.is(r2.body.data.length, 2, 'two participants')
+})
+
+test.api('leave a lobby', async function (t, request, store) {
+  const {id} = store.get('lobby 1')
+
+  const r = await request.delete(`/lobby/${id}/users`).set(await test.auth('user2@example.com', 'user2'))
+  t.is(r.status, 200, 'success')
+
+  const r2 = await request.get(`/lobby/${id}/users`).set(await test.auth('user1@example.com', 'user1'))
+  t.is(r2.status, 200, 'success')
+  t.is(r2.body.data.length, 1, 'one participant')
 })

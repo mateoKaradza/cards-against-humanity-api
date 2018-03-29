@@ -37,7 +37,7 @@ test.api('self update', async function (t, request) {
 })
 
 test.api('self add and change password', async function (t, request) {
-  const r2 = await request.put('/self/password').set(await test.auth('user2@example.com', 'user2')).send({
+  const r2 = await request.put('/self/password').set(await test.auth('user4@example.com', 'user2')).send({
     oldPassword: 'user2',
     newPassword: 'Password1234',
   })
@@ -45,7 +45,7 @@ test.api('self add and change password', async function (t, request) {
   t.notok(r2.body.error, 'no error')
 
   const r3 = await request.post('/auth').send({
-    email: 'user2@example.com',
+    email: 'user4@example.com',
     password: 'Password1234',
   })
   t.is(r3.status, 200, 'success')

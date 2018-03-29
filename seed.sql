@@ -37,3 +37,11 @@ INSERT INTO
 INSERT INTO
   user_role (user_id, role)
   VALUES (currval('user_id_seq'), 0);
+
+-- user4@example.com/user2
+INSERT INTO
+  "user" (email, username, password)
+  VALUES ('user4@example.com', 'user4', '$2a$08$xpRrAnWKV1W7kTXtUErzGOiFv7Mpvi59x30SCnM1rrQph1a05cuBC');
+INSERT INTO
+  user_role (user_id, role)
+  VALUES (currval('user_id_seq'), 0);

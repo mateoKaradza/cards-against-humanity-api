@@ -30,3 +30,4 @@ not_found = 5000
 
 [lobby]
 not_found = 6000
+access_denied = 6001
