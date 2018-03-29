@@ -1,17 +1,24 @@
 const error = require('error')
 const lobbyRepo = require('repo/lobby')
 
-// TODO: extend with is an admin functionality
+function belongsToLobby (requiresAdmin) {
+  return async function (ctx, next) {
+    const {id} = ctx.v.param
+    const {id: userId} = ctx.state.user
 
-async function belongsToLobby (ctx, next) {
-  const {id} = ctx.v.param
-  const {id: userId} = ctx.state.user
+    let user
 
-  try {
-    await lobbyRepo.getParticipant(id, userId)
+    try {
+      user = await lobbyRepo.getParticipant(id, userId)
+    } catch (err) {
+      throw new error.GenericError('lobby.access_denied', null, 401)
+    }
+
+    if (requiresAdmin && !user.admin) {
+      throw new error.GenericError('lobby.access_denied', null, 401)
+    }
+
     await next()
-  } catch (err) {
-    throw new error.GenericError('lobby.access_denied')
   }
 }
 

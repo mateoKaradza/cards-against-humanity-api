@@ -89,13 +89,12 @@ function removeUserFromLobby (id, userId) {
 }
 
 function setParticipantRole (id, userId, admin) {
-  return db.one(`
+  return db.none(`
     UPDATE participant
     SET admin = $[admin]
     WHERE
       lobby_id = $[id]
       AND user_id = $[userId]
-    RETURNING id
   `, {
     id,
     userId,

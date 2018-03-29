@@ -43,8 +43,13 @@ test.api('delete a lobby', async function (t, request) {
     size: 10,
   }), 'body.data.id')
 
-  const r = await request.delete(`/lobby/${id}`).set(await test.auth('user1@example.com', 'user1'))
-  t.is(r.status, 200, 'success')
+  await request.post(`/lobby/${id}/users`).set(await test.auth('user2@example.com', 'user2'))
+
+  const r = await request.delete(`/lobby/${id}`).set(await test.auth('user2@example.com', 'user2'))
+  t.is(r.status, 401, 'fails to delete a lobby as a regular user user')
+
+  const r2 = await request.delete(`/lobby/${id}`).set(await test.auth('user1@example.com', 'user1'))
+  t.is(r2.status, 200, 'success')
 })
 
 test.api('join a lobby', async function (t, request, store) {
@@ -54,7 +59,6 @@ test.api('join a lobby', async function (t, request, store) {
   t.is(r.status, 200, 'success')
 
   const r2 = await request.get(`/lobby/${id}/users`).set(await test.auth('user2@example.com', 'user2'))
-  t.is(r2.status, 200, 'success')
   t.is(r2.body.data.length, 2, 'two participants')
 })
 
@@ -65,6 +69,30 @@ test.api('leave a lobby', async function (t, request, store) {
   t.is(r.status, 200, 'success')
 
   const r2 = await request.get(`/lobby/${id}/users`).set(await test.auth('user1@example.com', 'user1'))
-  t.is(r2.status, 200, 'success')
   t.is(r2.body.data.length, 1, 'one participant')
+})
+
+test.api('kick user from a lobby', async function (t, request, store) {
+  const {id} = store.get('lobby 1')
+  await request.post(`/lobby/${id}/users`).set(await test.auth('user2@example.com', 'user2'))
+
+  const user = await request.get('/user/email/user2@example.com').set(await test.auth('superadmin@example.com', 'superadmin'))
+
+  const userId = _.get(user, 'body.data.id')
+
+  const r = await request.delete(`/lobby/${id}/users/${userId}`).set(await test.auth('user1@example.com', 'user1'))
+  t.is(r.status, 200, 'delete success')
+
+  const r2 = await request.get(`/lobby/${id}/users`).set(await test.auth('user1@example.com', 'user1'))
+  t.is(r2.body.data.length, 1, 'one participant')
+})
+
+test.api('lobby admin leaves a lobby', async function (t, request, store) {
+  const {id} = store.get('lobby 1')
+  await request.post(`/lobby/${id}/users`).set(await test.auth('user2@example.com', 'user2'))
+
+  await request.delete(`/lobby/${id}/users`).set(await test.auth('user1@example.com', 'user1'))
+
+  const r2 = await request.get(`/lobby/${id}/users`).set(await test.auth('user2@example.com', 'user2'))
+  t.is(r2.body.data[0].admin, true, 'another user became admin')
 })
