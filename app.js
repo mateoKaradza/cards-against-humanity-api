@@ -10,6 +10,8 @@ app.use(require('kcors')())
 app.use(require('koa-bodyparser')())
 app.use(require('middleware/error'))
 
+// TODO: Add Socket.io
+
 app.use(mount('/', require('route/card').routes()))
 app.use(mount('/', require('route/deck').routes()))
 app.use(mount('/', require('route/lobby').routes()))

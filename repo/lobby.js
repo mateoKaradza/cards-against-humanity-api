@@ -5,6 +5,8 @@ const {mapper} = require('repo/base')
 const map = mapper({
   id: 'id',
   name: 'name',
+  size: 'size',
+  deckId: 'deck_id',
   createdAt: 'created_at',
 })
 
