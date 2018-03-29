@@ -12,6 +12,7 @@ app.use(require('middleware/error'))
 
 app.use(mount('/', require('route/card').routes()))
 app.use(mount('/', require('route/deck').routes()))
+app.use(mount('/', require('route/lobby').routes()))
 app.use(mount('/', require('route/user').routes()))
 
 app.use(async function (ctx, next) {

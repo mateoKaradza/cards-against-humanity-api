@@ -121,9 +121,10 @@ async function getByEmailPassword (email, password) {
     FROM "user"
     WHERE email = $1
   `, [email])
-  .catch(error.QueryResultError, error('user.password_wrong'))
+  .catch(error.QueryResultError, error('user.not_found'))
   .catch(error.db('db.read'))
   await checkPasswordWithHash(password, user.password)
+  .catch(error('user.password_wrong'))
   return map(user)
 }
 

@@ -27,3 +27,6 @@ insufficient = 4002
 
 [deck]
 not_found = 5000
+
+[lobby]
+not_found = 6000

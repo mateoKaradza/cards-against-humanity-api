@@ -16,8 +16,8 @@ router.use(responder)
 
 // signup
 router.post('/signup', validate('body', {
-  email: joi.string().email().required(),
-  username: joi.string().trim().required(),
+  email: joi.string().email().lowercase().required(),
+  username: joi.string().trim().lowercase().required(),
   password: joi.string().min(8).required(),
 }), async function (ctx) {
   const {email, username, password} = ctx.v.body
@@ -27,7 +27,7 @@ router.post('/signup', validate('body', {
 })
 
 router.post('/auth', validate('body', {
-  email: joi.string().email().required(),
+  email: joi.string().email().lowercase().required(),
   password: joi.string().required(),
 }), async function (ctx) {
   const {email, password} = ctx.v.body
@@ -50,7 +50,7 @@ router.put('/self', auth, validate('body', {
 })
 
 router.put('/self/email', auth, validate('body', {
-  email: joi.string().email().required(),
+  email: joi.string().email().lowercase().required(),
   password: joi.string().optional(),
 }), async function (ctx) {
   const {id} = ctx.state.user
@@ -87,7 +87,7 @@ router.get('/user/:id', auth, roleUser.gte(consts.roleUser.admin), validate('par
 })
 
 router.get('/user/email/:email', auth, roleUser.gte(consts.roleUser.admin), validate('param', {
-  email: joi.string().email().required(),
+  email: joi.string().email().lowercase().required(),
 }), async function (ctx) {
   const {email} = ctx.v.param
   ctx.state.r = await userRepo.getByEmail(email)
@@ -105,7 +105,7 @@ router.put('/user/:id/role', auth, roleUser.gte(consts.roleUser.admin), validate
 })
 
 router.post('/recoverPassword', validate('body', {
-  email: joi.string().email().required(),
+  email: joi.string().email().lowercase().required(),
 }), async function (ctx) {
   // TODO throttle
   const {email} = ctx.v.body

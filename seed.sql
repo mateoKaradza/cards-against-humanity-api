@@ -37,11 +37,3 @@ INSERT INTO
 INSERT INTO
   user_role (user_id, role)
   VALUES (currval('user_id_seq'), 0);
-
--- user4@example.com/null
-INSERT INTO
-  "user" (email, username)
-  VALUES ('user4@example.com', 'user4');
-INSERT INTO
-  user_role (user_id, role)
-  VALUES (currval('user_id_seq'), 0);
