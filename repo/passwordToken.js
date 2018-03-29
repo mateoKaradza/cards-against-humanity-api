@@ -24,11 +24,11 @@ async function createByEmail (email) {
   return create(user.id)
 }
 
-async function remove (userId) {
+function remove (userId) {
   return db.none('DELETE FROM password_token WHERE user_id = $1', [userId])
 }
 
-async function get (token) {
+function get (token) {
   return db.one(`
     SELECT user_id
     FROM password_token

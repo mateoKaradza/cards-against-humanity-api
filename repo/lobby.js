@@ -10,7 +10,7 @@ const map = mapper({
   createdAt: 'created_at',
 })
 
-async function get () {
+function get () {
   return db.any(`
     SELECT *
     FROM lobby
@@ -19,7 +19,7 @@ async function get () {
   .catch(error.db('db.read'))
 }
 
-async function getById (id) {
+function getById (id) {
   return db.one(`
     SELECT *
     FROM lobby
@@ -30,7 +30,7 @@ async function getById (id) {
   .catch(error.db('db.read'))
 }
 
-async function create (name, deckId, size) {
+function create (name, deckId, size) {
   return db.one(`
     INSERT INTO lobby (name, deck_id, size)
     VALUES ($[name], $[deckId], $[size])
@@ -43,7 +43,7 @@ async function create (name, deckId, size) {
   .catch(error.db('db.write'))
 }
 
-async function deleteById (id) {
+function deleteById (id) {
   return db.one(`
     DELETE FROM lobby
     WHERE id = $[id]
@@ -53,9 +53,33 @@ async function deleteById (id) {
   .catch(error.db('db.delete'))
 }
 
+function addUserToLobby (id, userId, admin = false) {
+  return db.one(`
+    INSERT INTO participants (lobby_id, user_id, admin)
+    VALUES ($[id], $[userId], $[admin])
+  `, {
+    id,
+    userId,
+    admin,
+  })
+}
+
+function removeUserFromLobby (id, userId) {
+  return db.none(`
+    DELETE FROM participants
+    WHERE lobby_id = $[id]
+      AND user_id = [$userId]
+  `, {
+    id,
+    userId,
+  })
+}
+
 module.exports = {
+  addUserToLobby,
   create,
   deleteById,
   get,
   getById,
+  removeUserFromLobby,
 }

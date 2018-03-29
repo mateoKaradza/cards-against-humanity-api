@@ -11,7 +11,7 @@ const map = mapper({
   createdAt: 'created_at',
 })
 
-async function get () {
+function get () {
   return db.any(`
     SELECT *
     FROM card
@@ -20,7 +20,7 @@ async function get () {
   .catch(error.db('db.read'))
 }
 
-async function getById (id) {
+function getById (id) {
   return db.one(`
     SELECT *
     FROM card
@@ -31,7 +31,7 @@ async function getById (id) {
   .catch(error.db('db.read'))
 }
 
-async function getByDeckId (id) {
+function getByDeckId (id) {
   return db.any(`
     SELECT *
     FROM card
@@ -41,7 +41,7 @@ async function getByDeckId (id) {
   .catch(error.db('db.read'))
 }
 
-async function getEnabledByDeckId (id) {
+function getEnabledByDeckId (id) {
   return db.any(`
     SELECT *
     FROM card
@@ -53,7 +53,7 @@ async function getEnabledByDeckId (id) {
   .catch(error.db('db.read'))
 }
 
-async function create (text, type, deckId) {
+function create (text, type, deckId) {
   return db.one(`
     INSERT INTO card (text, type, deck_id)
     VALUES ($[text], $[type], $[deckId])
@@ -67,7 +67,7 @@ async function create (text, type, deckId) {
   .catch(error.db('db.write'))
 }
 
-async function deleteById (id) {
+function deleteById (id) {
   return db.one(`
     DELETE FROM card
     WHERE id = $[id]
@@ -77,7 +77,7 @@ async function deleteById (id) {
   .catch(error.db('db.delete'))
 }
 
-async function disableById (id) {
+function disableById (id) {
   return db.one(`
     UPDATE card
     SET active = FALSE
@@ -88,7 +88,7 @@ async function disableById (id) {
   .catch(error.db('db.write'))
 }
 
-async function enableById (id) {
+function enableById (id) {
   return db.one(`
     UPDATE card
     SET active = TRUE

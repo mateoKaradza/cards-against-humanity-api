@@ -8,7 +8,7 @@ const map = mapper({
   createdAt: 'created_at',
 })
 
-async function get () {
+function get () {
   return db.any(`
     SELECT *
     FROM deck
@@ -17,7 +17,7 @@ async function get () {
   .catch(error.db('db.read'))
 }
 
-async function getById (id) {
+function getById (id) {
   return db.one(`
     SELECT *
     FROM deck
@@ -28,7 +28,7 @@ async function getById (id) {
   .catch(error.db('db.read'))
 }
 
-async function create (name) {
+function create (name) {
   return db.one(`
     INSERT INTO deck (name)
     VALUES ($[name])
@@ -37,7 +37,7 @@ async function create (name) {
   .catch(error.db('db.write'))
 }
 
-async function deleteById (id) {
+function deleteById (id) {
   return db.one(`
     DELETE FROM deck
     WHERE id = $[id]

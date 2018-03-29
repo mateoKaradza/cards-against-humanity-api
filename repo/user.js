@@ -14,12 +14,12 @@ const map = mapper({
   username: 'username',
 })
 
-async function hashPassword (password) {
+function hashPassword (password) {
   return bcrypt.hash(password, _.toInteger(process.env.BCRYPT_ROUNDS))
   .catch(error.db('user.password_invalid'))
 }
 
-async function checkPasswordWithHash (password, hash) {
+function checkPasswordWithHash (password, hash) {
   password = password || 'null'
   hash = hash || 'null'
   return bcrypt.compare(password, hash).then(assert)
@@ -40,11 +40,10 @@ async function checkPassword (id, password) {
 
 async function create (email, username, password) {
   return db.tx(async function (t) {
-    return t.one(`
+    return t.none(`
       INSERT INTO
         "user" (email, username, password)
         VALUES ($[email], $[username], $[password])
-        RETURNING id;
       INSERT INTO
         user_role (user_id, role)
         VALUES (currval('user_id_seq'), $[role])
@@ -69,7 +68,7 @@ async function updatePassword (id, password) {
   .catch(error.db('db.update'))
 }
 
-async function updateEmail (id, email) {
+function updateEmail (id, email) {
   return db.one(`
     UPDATE "user"
     SET email = $2
@@ -81,7 +80,7 @@ async function updateEmail (id, email) {
   .then(map)
 }
 
-async function getById (id) {
+function getById (id) {
   return db.one(`
     SELECT *
     FROM "user"
@@ -104,7 +103,7 @@ async function getByIdPassword (id, password) {
   return map(user)
 }
 
-async function getByEmail (email) {
+function getByEmail (email) {
   return db.one(`
     SELECT *
     FROM "user"
@@ -128,7 +127,7 @@ async function getByEmailPassword (email, password) {
   return map(user)
 }
 
-async function getRoleById (id) {
+function getRoleById (id) {
   return db.one(`
     SELECT role
     FROM user_role
@@ -139,7 +138,7 @@ async function getRoleById (id) {
   .get('role')
 }
 
-async function setRoleById (id, role) {
+function setRoleById (id, role) {
   return db.none(`
     UPDATE user_role
     SET role = $[role]
