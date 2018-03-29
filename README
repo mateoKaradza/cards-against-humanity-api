@@ -1,2 +1,2 @@
-docker run --name cah_api_db -e POSTGRES_USER=cah_api -e POSTGRES_PASSWORD=api -p 5433:5432 -d postgres:9.6-alpine
-docker run -p 8081:8081 --link cah_api_db:db -e DATABASE_URL=postgres://cah_api:api@db:5433/cah_api?sslmode=disable --rm sosedoff/pgweb
+docker run --name cah_api_db -e POSTGRES_USER=cah_api -e POSTGRES_PASSWORD=api -p 5432:5432 -d postgres:10-alpine
+docker run -p 8081:8081 --link cah_api_db:db -e DATABASE_URL='postgres://cah_api:api@db:5432/cah_api?sslmode=disable' --rm sosedoff/pgweb
