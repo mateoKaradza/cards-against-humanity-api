@@ -42,7 +42,7 @@ router.delete('/lobby/:id', auth, validate('param', {
   ctx.state.r = {}
 })
 
-router.post('/lobby/:id/users', auth, validate('param', {
+router.post('/lobby/:id/user', auth, validate('param', {
   id: joi.number().integer().positive().required(),
 }), async function (ctx) {
   const {id} = ctx.v.param
@@ -59,14 +59,15 @@ router.post('/lobby/:id/users', auth, validate('param', {
   ctx.state.r = {}
 })
 
-router.get('/lobby/:id/users', auth, validate('param', {
+// TODO: add usernames to response
+router.get('/lobby/:id/user', auth, validate('param', {
   id: joi.number().integer().positive().required(),
 }), belongsToLobby(false), async function (ctx) {
   const {id} = ctx.v.param
   ctx.state.r = await lobbyRepo.getParticipants(id)
 })
 
-router.delete('/lobby/:id/users/:userId', auth, validate('param', {
+router.delete('/lobby/:id/user/:userId', auth, validate('param', {
   id: joi.number().integer().positive().required(),
   userId: joi.number().integer().positive().required(),
 }), belongsToLobby(true), async function (ctx) {
@@ -82,7 +83,7 @@ router.delete('/lobby/:id/users/:userId', auth, validate('param', {
   ctx.state.r = {}
 })
 
-router.delete('/lobby/:id/users', auth, validate('param', {
+router.delete('/lobby/:id/user', auth, validate('param', {
   id: joi.number().integer().positive().required(),
 }), belongsToLobby(false), async function (ctx) {
   // TODO: Socket: inform other participants

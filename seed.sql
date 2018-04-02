@@ -45,3 +45,122 @@ INSERT INTO
 INSERT INTO
   user_role (user_id, role)
   VALUES (currval('user_id_seq'), 0);
+
+-- Deck
+INSERT INTO
+  deck (name)
+  VALUES ('Primary Deck');
+
+-- Cards
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('First', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Second', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Third', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Fourth', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Fifth', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Sixth', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Seventh', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Eighth', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Ninth', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Tenth', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Eleventh', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Twelveth', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Thirteenth', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Fourteenth', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Fifteenth', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Sixteenth', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Seventeeth', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Eighteenth', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Nineteenth', 1);
+
+INSERT INTO
+  card ("text", deck_id)
+  VALUES ('Twentieth', 1);
+
+-- Black cards
+INSERT INTO
+  card ("text", "type", deck_id)
+  VALUES ('First black', 1, 1);
+
+INSERT INTO
+  card ("text", "type", deck_id)
+  VALUES ('Second black', 1, 1);
+
+INSERT INTO
+  card ("text", "type", deck_id)
+  VALUES ('Third black', 1, 1);
+
+INSERT INTO
+  card ("text", "type", deck_id)
+  VALUES ('Fourth black', 1, 1);
+
+INSERT INTO
+  card ("text", "type", deck_id)
+  VALUES ('Fifth black', 1, 1);
+
+INSERT INTO
+  card ("text", "type", deck_id)
+  VALUES ('Sixth black', 1, 1);
+
+INSERT INTO
+  card ("text", "type", deck_id)
+  VALUES ('Seventh black', 1, 1);
+
+INSERT INTO
+  card ("text", "type", deck_id)
+  VALUES ('Eighth black', 1, 1);

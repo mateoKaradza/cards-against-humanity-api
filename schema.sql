@@ -77,3 +77,12 @@ CREATE TABLE round (
   points SMALLINT NOT NULL DEFAULT 0,
   PRIMARY KEY (lobby_id, user_id, round)
 );
+
+CREATE TABLE user_card (
+  lobby_id INTEGER NOT NULL REFERENCES lobby (id) ON DELETE RESTRICT,
+  user_id INTEGER NOT NULL REFERENCES "user" (id) ON DELETE RESTRICT,
+  round SMALLINT NOT NULL,
+  card_id INTEGER NOT NULL REFERENCES card (id) ON DELETE RESTRICT,
+  used BOOLEAN NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (lobby_id, user_id, round)
+);

@@ -14,7 +14,6 @@ const mailer = require('mail')
 
 router.use(responder)
 
-// signup
 router.post('/signup', validate('body', {
   email: joi.string().email().lowercase().required(),
   username: joi.string().trim().lowercase().required(),
