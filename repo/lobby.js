@@ -14,6 +14,8 @@ const participantMap = mapper({
   lobbyId: 'lobby_id',
   userId: 'user_id',
   admin: 'admin',
+  points: 'points',
+  joined: 'joined_at',
 })
 
 function get () {

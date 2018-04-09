@@ -3,8 +3,10 @@ const router = new (require('koa-router'))()
 
 const error = require('error')
 const auth = require('middleware/auth')
+const {belongsToLobby} = require('middleware/lobby')
 const responder = require('middleware/responder')
 const validate = require('middleware/validate')
+const gameRepo = require('repo/game')
 
 router.use(responder)
 
@@ -25,5 +27,14 @@ On start of each round, give cards to users
   insert values into user_card table, will be using for tracking the hand
 
 */
+
+router.post('/game/:id', auth, validate('params', {
+  id: joi.number().integer().positive(),
+}), belongsToLobby(true), async function (ctx) {
+  const {id} = ctx.v.params
+
+  await gameRepo.startRound(id, 1)
+  await gameRepo.handCards(id)
+})
 
 module.exports = router
