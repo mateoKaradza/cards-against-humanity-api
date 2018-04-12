@@ -1,7 +1,7 @@
 const joi = require('joi')
 const router = new (require('koa-router'))()
 
-const error = require('error')
+// const error = require('error')
 const auth = require('middleware/auth')
 const {belongsToLobby} = require('middleware/lobby')
 const responder = require('middleware/responder')
@@ -28,13 +28,15 @@ On start of each round, give cards to users
 
 */
 
-router.post('/game/:id', auth, validate('params', {
+router.post('/game/:id', auth, validate('param', {
   id: joi.number().integer().positive(),
 }), belongsToLobby(true), async function (ctx) {
-  const {id} = ctx.v.params
+  const {id} = ctx.v.param
 
   await gameRepo.startRound(id, 1)
-  await gameRepo.handCards(id)
+  await gameRepo.fillHand(id, 1)
+
+  ctx.state.r = {}
 })
 
 module.exports = router

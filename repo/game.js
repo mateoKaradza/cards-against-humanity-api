@@ -1,30 +1,35 @@
 const _ = require('lodash')
 const error = require('error')
 const {db} = require('db')
+const lobbyRepo = require('repo/lobby')
 const {mapper} = require('repo/base')
 
-const map = mapper({
-  id: 'id',
-  name: 'name',
-  size: 'size',
-  deckId: 'deck_id',
-  createdAt: 'created_at',
+const participantMap = mapper({
+  lobbyId: 'lobby_id',
+  userId: 'user_id',
+  admin: 'admin',
+  points: 'points',
+  joinedAt: 'joined_at',
 })
 
-async function getCzarCard (id) {
+async function getCzarCard (id, deckId) {
   const cards = await db.many(`
     SELECT *
-    FROM deck
-    WHERE id NOT IN (
-      SELECT czar_card_id
-      FROM round
-      WHERE lobby_id = $[id]
-    )
+    FROM card
+    WHERE
+      id NOT IN (
+        SELECT czar_card_id
+        FROM round
+        WHERE lobby_id = $[id]
+      )
+      AND type = 1
+      AND deck_id = $[deckId]
   `, {
     id,
+    deckId,
   })
   .catch(error.db('db.read'))
-  return _.some(cards)
+  return _.sample(cards)
 }
 
 // TODO: need better logic
@@ -37,13 +42,15 @@ async function getNextCzarUser (id) {
     id,
   })
   .catch(error.db('db.read'))
+  .map(participantMap)
 
-  return _.some(users)
+  return _.sample(users)
 }
 
 async function startRound (id, round) {
-  const {id: cardId} = await getCzarCard(id)
-  const {id: userId} = await getNextCzarUser(id)
+  const {deckId} = await lobbyRepo.getById(id)
+  const {id: cardId} = await getCzarCard(id, deckId)
+  const {userId} = await getNextCzarUser(id)
 
   return db.none(`
     INSERT INTO round (lobby_id, round, czar_user_id, czar_card_id)
@@ -77,12 +84,14 @@ async function getHand (id, userId) {
 async function getCards (id, limit = 100) {
   const cards = await db.many(`
     SELECT *
-    FROM DECK
-    WHERE deck.id NOT IN (
-      SELECT card_id
-      FROM user_card
-      WHERE lobby_id = $[id]
-    )
+    FROM card
+    WHERE
+      id NOT IN (
+        SELECT card_id
+        FROM user_card
+        WHERE lobby_id = $[id]
+      )
+      AND deck_id = $[id]
   `, {
     id,
   })
@@ -90,34 +99,48 @@ async function getCards (id, limit = 100) {
   return _.sampleSize(cards, limit)
 }
 
-async function fillHand (id) {
+async function fillHand (id, roundNumber) {
   let cardIndex = 0
+  let query = ''
   let cards = await getCards(id)
 
-  const participants = await db.many(`
-    SELECT user_id, count (card_id) as cards
-    FROM user_card
-    WHERE
-      lobby_id = $[id]
-      AND used_round = NULL
-    GROUP BY user_id
-  `, {
-    id,
-  })
+  let participants
+
+  try {
+    participants = await db.many(`
+      SELECT user_id, count (card_id) as cards
+      FROM user_card
+      WHERE
+        lobby_id = $[id]
+        AND used_round = NULL
+      GROUP BY user_id
+    `, {
+      id,
+    })
+  } catch (error) {
+    participants = await db.many(`
+      SELECT user_id, 0 as cards
+      FROM participant
+      WHERE lobby_id = $[id]
+    `, {
+      id,
+    })
+  }
+
   participants.forEach(async p => {
-    // TODO: pitat stipu
     for (let i = p.cards; i < 10; i++) {
-      await db.none(`
-        GIVE CARD TO USER
-      `)
+      query += `
+        INSERT INTO user_card (lobby_id, user_id, round, card_id)
+        VALUES (${id}, ${p.user_id}, ${roundNumber}, ${cards[cardIndex++].id});
+      `
     }
   })
-  return db.none(`
 
-  `)
+  return db.none(query)
 }
 
 module.exports = {
+  fillHand,
   getHand,
   startRound,
 }

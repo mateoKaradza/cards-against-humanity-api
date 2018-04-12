@@ -16,6 +16,7 @@ app.use(mount('/', require('route/card').routes()))
 app.use(mount('/', require('route/deck').routes()))
 app.use(mount('/', require('route/lobby').routes()))
 app.use(mount('/', require('route/user').routes()))
+app.use(mount('/', require('route/game').routes()))
 
 app.use(async function (ctx, next) {
   ctx.throw(404)

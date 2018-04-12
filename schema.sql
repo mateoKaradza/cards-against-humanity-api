@@ -78,5 +78,5 @@ CREATE TABLE user_card (
   round SMALLINT NOT NULL,
   card_id INTEGER NOT NULL REFERENCES card (id) ON DELETE RESTRICT,
   used_round SMALLINT DEFAULT NULL,
-  PRIMARY KEY (lobby_id, user_id, round)
+  PRIMARY KEY (lobby_id, user_id, round, card_id)
 );
