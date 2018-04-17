@@ -29,7 +29,7 @@ On start of each round, give cards to users
 */
 
 router.post('/game/:id', auth, validate('param', {
-  id: joi.number().integer().positive(),
+  id: joi.number().integer().positive().required(),
 }), belongsToLobby(true), async function (ctx) {
   const {id} = ctx.v.param
 
@@ -37,6 +37,23 @@ router.post('/game/:id', auth, validate('param', {
   await gameRepo.fillHand(id, 1)
 
   ctx.state.r = {}
+})
+
+router.get('/game/:id/round/:round', auth, validate('param', {
+  id: joi.number().integer().positive().required(),
+  round: joi.number().positive().required(),
+}), belongsToLobby(false), async function (ctx) {
+  const {id, round} = ctx.v.param
+
+  ctx.state.r = await gameRepo.getRoundById(round, id)
+})
+
+router.get('/game/:id/card', auth, validate('param', {
+  id: joi.number().integer().positive(),
+}), belongsToLobby(false), async function (ctx) {
+  const {id} = ctx.v.param
+  const {id: userId} = ctx.state.user
+  ctx.state.r = await gameRepo.getHand(id, userId)
 })
 
 module.exports = router

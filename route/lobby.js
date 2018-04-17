@@ -33,15 +33,6 @@ router.post('/lobby', auth, validate('body', {
   ctx.state.r = await lobbyRepo.getById(id)
 })
 
-// TODO: remove this function, use leave instead
-router.delete('/lobby/:id', auth, validate('param', {
-  id: joi.number().integer().positive().required(),
-}), belongsToLobby(true), async function (ctx) {
-  const {id} = ctx.v.param
-  await lobbyRepo.deleteById(id)
-  ctx.state.r = {}
-})
-
 router.post('/lobby/:id/user', auth, validate('param', {
   id: joi.number().integer().positive().required(),
 }), async function (ctx) {

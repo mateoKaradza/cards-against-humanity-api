@@ -36,22 +36,6 @@ test.api('get a lobby', async function (t, request, store) {
   t.deepEqual(r.body.data, lobby, 'returning the lobby')
 })
 
-test.api('delete a lobby', async function (t, request) {
-  const id = _.get(await request.post('/lobby').set(await test.auth('user1@example.com', 'user1')).send({
-    name: 'Lobby For Deleting',
-    deckId: 1,
-    size: 10,
-  }), 'body.data.id')
-
-  await request.post(`/lobby/${id}/user`).set(await test.auth('user2@example.com', 'user2'))
-
-  const r = await request.delete(`/lobby/${id}`).set(await test.auth('user2@example.com', 'user2'))
-  t.is(r.status, 401, 'fails to delete a lobby as a regular user user')
-
-  const r2 = await request.delete(`/lobby/${id}`).set(await test.auth('user1@example.com', 'user1'))
-  t.is(r2.status, 200, 'success')
-})
-
 test.api('join a lobby', async function (t, request, store) {
   const {id} = store.get('lobby 1')
 
